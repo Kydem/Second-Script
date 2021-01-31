@@ -15,10 +15,10 @@ from Settings_Module import MySettings
 #---------------------------
 #   [Required] Script Information
 #---------------------------
-ScriptName = "Template Script"
-Website = "https://www.streamlabs.com"
-Description = "!test will post a message in chat"
-Creator = "AnkhHeart"
+ScriptName = "Tic Tac Toe"
+Website = "https://www.twitch.tv/germansausagesarezewurst"
+Description = "Starts a game of Tic Tac Toe"
+Creator = "GermanSausages"
 Version = "1.0.0.0"
 
 #---------------------------
@@ -33,32 +33,23 @@ ScriptSettings = MySettings()
 #   [Required] Initialize Data (Only called on load)
 #---------------------------
 def Init():
+    Log("Init Called")
+    EnsureLocalDirectoryExists("settings")
 
-    #   Create Settings Directory
-    directory = os.path.join(os.path.dirname(__file__), "Settings")
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    #   Load settings
-    SettingsFile = os.path.join(os.path.dirname(__file__), "Settings\settings.json")
     ScriptSettings = MySettings(SettingsFile)
-    ScriptSettings.Response = "Overwritten pong! ^_^"
+    Log("Init Ended")
     return
 
 #---------------------------
 #   [Required] Execute Data / Process messages
 #---------------------------
 def Execute(data):
-    if data.IsChatMessage() and data.GetParam(0).lower() == ScriptSettings.Command and Parent.IsOnUserCooldown(ScriptName,ScriptSettings.Command,data.User):
-        Parent.SendStreamMessage("Time Remaining " + str(Parent.GetUserCooldownDuration(ScriptName,ScriptSettings.Command,data.User)))
+    Log("Execute Called")
+    if not data.IsFromTwitch() or not data.IsChatMessage():
+        return
+        Log("Execute is Chat message")
 
-    #   Check if the propper command is used, the command is not on cooldown and the user has permission to use the command
-    if data.IsChatMessage() and data.GetParam(0).lower() == ScriptSettings.Command and not Parent.IsOnUserCooldown(ScriptName,ScriptSettings.Command,data.User) and Parent.HasPermission(data.User,ScriptSettings.Permission,ScriptSettings.Info):
-        Parent.BroadcastWsEvent("EVENT_MINE","{'show':false}")
-        Parent.SendStreamMessage(ScriptSettings.Response)    # Send your message to chat
-        Parent.AddUserCooldown(ScriptName,ScriptSettings.Command,data.User,ScriptSettings.Cooldown)  # Put the command on cooldown
-
-    
+    Log("Excute Ended")
     return
 
 #---------------------------
@@ -71,10 +62,6 @@ def Tick():
 #   [Optional] Parse method (Allows you to create your own custom $parameters) 
 #---------------------------
 def Parse(parseString, userid, username, targetid, targetname, message):
-    
-    if "$myparameter" in parseString:
-        return parseString.replace("$myparameter","I am a cat!")
-    
     return parseString
 
 #---------------------------
@@ -96,4 +83,17 @@ def Unload():
 #   [Optional] ScriptToggled (Notifies you when a user disables your script or enables it)
 #---------------------------
 def ScriptToggled(state):
+    return
+
+def EnsureLocalDirectoryExists(dirName):
+    directory = os.path.join(os.path.dirname(__file__), dirName)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+def Log(message):
+    Parent.Log("SecondScript", str(message))
+    return
+
+def SendMessage(message):
+    Parent.SendsStreamMessage(message)
     return
