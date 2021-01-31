@@ -24,10 +24,8 @@ Version = "1.0.0.0"
 #---------------------------
 #   Define Global Variables
 #---------------------------
-global SettingsFile
-SettingsFile = ""
-global ScriptSettings
-ScriptSettings = MySettings()
+SettingsFile = os.path.join(os.path.dirname(__file__), "Settings\settings.json")
+Settings_Module = MySettings
 
 #---------------------------
 #   [Required] Initialize Data (Only called on load)
@@ -48,6 +46,10 @@ def Execute(data):
     if not data.IsFromTwitch() or not data.IsChatMessage():
         return
         Log("Execute is Chat message")
+
+    if Settings_Module.Command.lower() in data.IsChatMessage():
+        result = Parent.GetDisplayName(data.User)
+        if 
 
     Log("Excute Ended")
     return
@@ -91,7 +93,7 @@ def EnsureLocalDirectoryExists(dirName):
         os.makedirs(directory)
 
 def Log(message):
-    Parent.Log("SecondScript", str(message))
+    Parent.Log("TicTacToe", str(message))
     return
 
 def SendMessage(message):
