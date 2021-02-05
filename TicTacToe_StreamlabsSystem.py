@@ -49,7 +49,6 @@ def Execute(data):
 
     if Settings_Module.Command.lower() in data.IsChatMessage():
         result = Parent.GetDisplayName(data.User)
-        if 
 
     Log("Excute Ended")
     return
