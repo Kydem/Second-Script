@@ -3,6 +3,7 @@
 #---------------------------
 import os
 import sys
+import time
 import json
 sys.path.append(os.path.join(os.path.dirname(__file__), "lib")) #point at lib folder for classes / references
 
@@ -27,12 +28,25 @@ Version = "1.0.0.0"
 SettingsFile = os.path.join(os.path.dirname(__file__), "Settings\settings.json")
 Settings_Module = MySettings
 
+BOARD = [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+PLAYER = 1
+
+#### WIN Flags ####
+WIN = 1
+DRAW = 2
+RUNNING = 0
+STOP = 1
+###################
+GAME = RUNNING
+MARK = 'X'
+
 #---------------------------
 #   [Required] Initialize Data (Only called on load)
 #---------------------------
 def Init():
     Log("Init Called")
     EnsureLocalDirectoryExists("settings")
+
 
     ScriptSettings = MySettings(SettingsFile)
     Log("Init Ended")
@@ -48,7 +62,10 @@ def Execute(data):
         Log("Execute is Chat message")
 
     if Settings_Module.Command.lower() in data.IsChatMessage():
-        result = Parent.GetDisplayName(data.User)
+        result = DRAWBOARD
+        result = CheckPosition
+        result = CheckWIN
+
 
     Log("Excute Ended")
     return
